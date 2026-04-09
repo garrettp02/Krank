@@ -1989,15 +1989,6 @@ function handleBoardTouchMove(event) {
   }
 
   event.preventDefault();
-  const deltaX = touch.clientX - swipeStartPoint.x;
-  const deltaY = touch.clientY - swipeStartPoint.y;
-
-  if (
-    Math.abs(deltaX) >= SWIPE_MIN_DISTANCE_PX ||
-    Math.abs(deltaY) >= SWIPE_MIN_DISTANCE_PX
-  ) {
-    event.preventDefault();
-  }
 }
 
 function handleBoardTouchEnd(event) {
