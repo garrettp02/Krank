@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Classic Snake</title>
+    <link rel="stylesheet" href="./src/styles.css?v=20260408-24" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="game-shell" aria-labelledby="game-title">
+        <div class="top-bar">
+          <h1 id="game-title">Level <span id="current-level">1</span></h1>
+          <div class="score-board">
+            <p class="score">Score: <span id="score">0</span></p>
+            <p class="score-detail">
+              Apples: <span id="level-apples">0</span>/<span id="level-target">1</span>
+            </p>
+            <p class="score-detail">
+              Speed: <span id="speed">1.00x</span>
+            </p>
+            <p class="score-detail">
+              Time: <span id="timer">00:00.0</span>
+            </p>
+            <p class="score-detail">
+              Level Time: <span id="level-timer">00:00.0</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="game-column">
+          <div class="board-rocks">
+            <div
+              id="board"
+              class="board"
+              role="grid"
+              aria-label="Snake game board"
+            ></div>
+          </div>
+
+          <aside class="level-panel" aria-label="Level list">
+            <p class="level-panel-title">Levels</p>
+            <ol id="level-list" class="level-list"></ol>
+          </aside>
+
+          <p id="status" class="status" aria-live="polite">
+            Use arrow keys or WASD to start.
+          </p>
+
+          <div class="actions">
+            <button id="restart" type="button">Restart</button>
+            <button id="pause" type="button">Pause</button>
+          </div>
+
+        </div>
+
+      </section>
+
+      <section
+        id="win-screen"
+        class="win-screen"
+        aria-labelledby="win-title"
+        aria-modal="true"
+        hidden
+      >
+        <div class="win-card">
+          <h2 id="win-title">You won</h2>
+          <p class="win-final-score">Final Score: <span id="win-score">0</span></p>
+          <p>Time: <span id="win-time">00:00.0</span></p>
+          <p>Status: <span id="win-result">Completed</span></p>
+          <p>Furthest Level: <span id="win-furthest-level">30</span></p>
+          <div class="win-score-breakdown">
+            <p>Progress Score: <span id="win-progress-score">0</span></p>
+            <p>Completion Bonus: <span id="win-completion-bonus">0</span></p>
+            <p>Time Bonus: <span id="win-time-bonus">0</span></p>
+            <p>Size Bonus: <span id="win-size-bonus">0</span></p>
+            <p>Power Bonus: <span id="win-power-bonus">0</span></p>
+            <p>Max Length: <span id="win-max-length">3</span></p>
+            <p>Power-ups: <span id="win-power-ups">0</span></p>
+          </div>
+          <button id="win-restart" type="button">Restart</button>
+        </div>
+      </section>
+
+      <section
+        id="loss-screen"
+        class="win-screen"
+        aria-labelledby="loss-title"
+        aria-modal="true"
+        hidden
+      >
+        <div class="win-card">
+          <h2 id="loss-title">You lost</h2>
+          <p class="win-final-score">Final Score: <span id="loss-score">0</span></p>
+          <p>Time: <span id="loss-time">00:00.0</span></p>
+          <p>Status: <span id="loss-result">Failed</span></p>
+          <p>Furthest Level: <span id="loss-furthest-level">1</span></p>
+          <div class="win-score-breakdown">
+            <p>Progress Score: <span id="loss-progress-score">0</span></p>
+            <p>Completion Bonus: <span id="loss-completion-bonus">0</span></p>
+            <p>Time Bonus: <span id="loss-time-bonus">0</span></p>
+            <p>Size Bonus: <span id="loss-size-bonus">0</span></p>
+            <p>Power Bonus: <span id="loss-power-bonus">0</span></p>
+            <p>Max Length: <span id="loss-max-length">3</span></p>
+            <p>Power-ups: <span id="loss-power-ups">0</span></p>
+          </div>
+          <button id="loss-restart" type="button">Restart</button>
+        </div>
+      </section>
+    </main>
+
+    <script type="module" src="./src/app.js?v=20260408-12"></script>
+  </body>
+</html>
