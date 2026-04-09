@@ -1967,6 +1967,7 @@ function handleBoardTouchStart(event) {
     return;
   }
 
+  event.preventDefault();
   const touch = event.touches[0];
 
   swipeTrackingId = touch.identifier;
@@ -1987,15 +1988,7 @@ function handleBoardTouchMove(event) {
     return;
   }
 
-  const deltaX = touch.clientX - swipeStartPoint.x;
-  const deltaY = touch.clientY - swipeStartPoint.y;
-
-  if (
-    Math.abs(deltaX) >= SWIPE_MIN_DISTANCE_PX ||
-    Math.abs(deltaY) >= SWIPE_MIN_DISTANCE_PX
-  ) {
-    event.preventDefault();
-  }
+  event.preventDefault();
 }
 
 function handleBoardTouchEnd(event) {
@@ -2110,10 +2103,10 @@ pause.addEventListener("click", togglePause);
 winRestart.addEventListener("click", restartGame);
 lossRestart.addEventListener("click", restartGame);
 
-boardRocks.addEventListener("touchstart", handleBoardTouchStart, { passive: true });
+boardRocks.addEventListener("touchstart", handleBoardTouchStart, { passive: false });
 boardRocks.addEventListener("touchmove", handleBoardTouchMove, { passive: false });
 boardRocks.addEventListener("touchend", handleBoardTouchEnd, { passive: false });
-boardRocks.addEventListener("touchcancel", handleBoardTouchCancel);
+boardRocks.addEventListener("touchcancel", handleBoardTouchCancel, { passive: false });
 
 render();
 showLevelChangePopup(currentLevel);
