@@ -2121,17 +2121,90 @@ h1 {
 }
 
 #leaderboard {
-  margin-top: 10px;
+  background-color: #dca85f;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(111, 78, 39, 0.18) 0 1px,
+      transparent 1px 14px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(95, 59, 28, 0.2) 0 1px,
+      transparent 1px 48px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 244, 214, 0.26),
+      transparent 18% 72%,
+      rgba(117, 72, 32, 0.16)
+    );
+  border: 8px solid #6b7280;
+  border-image: repeating-conic-gradient(
+    from 16deg,
+    #9ca3af 0 10deg,
+    #6b7280 10deg 24deg,
+    #4b5563 24deg 34deg,
+    #7b8491 34deg 48deg
+  ) 12;
+  border-radius: 8px;
+  box-shadow:
+    0 10px 22px rgba(12, 45, 23, 0.28),
+    inset 0 0 0 1px rgba(85, 54, 27, 0.35);
+  color: #3f2a16;
   font-size: 14px;
+  margin-top: 10px;
+  max-width: 100%;
+  padding: 1rem;
+  width: min(100%, 420px);
 }
 
 #leaderboard h2 {
-  margin: 0 0 0.4rem;
+  color: #3f2a16;
+  margin: 0 0 0.6rem;
 }
 
 #leaderboard-list {
-  margin: 0;
+  margin: 0 auto;
+  max-width: 320px;
   padding-left: 1.25rem;
+  text-align: left;
+}
+
+#leaderboard-list li {
+  margin-bottom: 0.35rem;
+}
+
+.leaderboard-submit-card {
+  width: min(100%, 460px);
+}
+
+.leaderboard-name-label {
+  color: #3f2a16;
+  display: block;
+  font-weight: 700;
+  margin-top: 0.8rem;
+}
+
+.leaderboard-name-input {
+  background: rgba(255, 244, 214, 0.7);
+  border: 1px solid rgba(91, 56, 27, 0.42);
+  border-radius: 6px;
+  color: #2f1d0e;
+  font: inherit;
+  margin-top: 0.4rem;
+  padding: 0.6rem 0.7rem;
+  width: 100%;
+}
+
+.leaderboard-name-input:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+.leaderboard-submit-actions {
+  justify-content: center;
+  margin-top: 1rem;
 }
 
 .level-panel {

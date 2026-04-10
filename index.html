@@ -148,6 +148,33 @@
           <button id="loss-restart" type="button">Restart</button>
         </div>
       </section>
+
+      <section
+        id="leaderboard-submit-screen"
+        class="win-screen"
+        aria-labelledby="leaderboard-submit-title"
+        aria-modal="true"
+        hidden
+      >
+        <div class="win-card leaderboard-submit-card">
+          <h2 id="leaderboard-submit-title">Submit Score</h2>
+          <p>Enter your name for the global leaderboard.</p>
+          <label class="leaderboard-name-label" for="leaderboard-name-input">
+            Name (max 20 characters)
+          </label>
+          <input
+            id="leaderboard-name-input"
+            class="leaderboard-name-input"
+            type="text"
+            maxlength="20"
+            autocomplete="nickname"
+          />
+          <div class="actions leaderboard-submit-actions">
+            <button id="leaderboard-submit-button" type="button">Submit</button>
+            <button id="leaderboard-skip-button" type="button">Skip</button>
+          </div>
+        </div>
+      </section>
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>

@@ -183,6 +183,10 @@ const lossPowerBonus = document.querySelector("#loss-power-bonus");
 const lossMaxLength = document.querySelector("#loss-max-length");
 const lossPowerUps = document.querySelector("#loss-power-ups");
 const lossRestart = document.querySelector("#loss-restart");
+const leaderboardSubmitScreen = document.querySelector("#leaderboard-submit-screen");
+const leaderboardNameInput = document.querySelector("#leaderboard-name-input");
+const leaderboardSubmitButton = document.querySelector("#leaderboard-submit-button");
+const leaderboardSkipButton = document.querySelector("#leaderboard-skip-button");
 const topBar = document.querySelector(".top-bar");
 const actions = document.querySelector(".actions");
 const gameTabButton = document.querySelector("#game-tab-button");
@@ -1113,19 +1117,54 @@ async function submitScore(name, scoreValue, levelReached) {
 }
 
 function promptForName() {
-  const rawName = window.prompt("Enter your name for the leaderboard (max 20 chars):");
-
-  if (!rawName) {
-    return null;
+  if (
+    !leaderboardSubmitScreen ||
+    !leaderboardNameInput ||
+    !leaderboardSubmitButton ||
+    !leaderboardSkipButton
+  ) {
+    const rawName = window.prompt("Enter your name for the leaderboard (max 20 chars):");
+    const fallbackName = rawName?.trim().slice(0, 20) ?? "";
+    return Promise.resolve(fallbackName || null);
   }
 
-  const name = rawName.trim().slice(0, 20);
+  return new Promise((resolve) => {
+    const finish = (value) => {
+      leaderboardSubmitScreen.hidden = true;
+      leaderboardNameInput.value = "";
+      leaderboardSubmitButton.removeEventListener("click", submitHandler);
+      leaderboardSkipButton.removeEventListener("click", skipHandler);
+      leaderboardNameInput.removeEventListener("keydown", keyHandler);
+      resolve(value);
+    };
 
-  if (!name) {
-    return null;
-  }
+    const submitHandler = () => {
+      const name = leaderboardNameInput.value.trim().slice(0, 20);
+      if (!name) {
+        leaderboardNameInput.focus();
+        return;
+      }
+      finish(name);
+    };
 
-  return name;
+    const skipHandler = () => finish(null);
+
+    const keyHandler = (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        submitHandler();
+      } else if (event.key === "Escape") {
+        event.preventDefault();
+        skipHandler();
+      }
+    };
+
+    leaderboardSubmitScreen.hidden = false;
+    leaderboardNameInput.focus();
+    leaderboardSubmitButton.addEventListener("click", submitHandler);
+    leaderboardSkipButton.addEventListener("click", skipHandler);
+    leaderboardNameInput.addEventListener("keydown", keyHandler);
+  });
 }
 
 async function handleGameOverLeaderboard() {
@@ -1134,7 +1173,7 @@ async function handleGameOverLeaderboard() {
   }
 
   leaderboardHandledForGameOver = true;
-  const name = promptForName();
+  const name = await promptForName();
 
   if (!name) {
     return;
@@ -1697,6 +1736,9 @@ function restartGame() {
   completedAllLevels = false;
   tickMs = BASE_TICK_MS;
   leaderboardHandledForGameOver = false;
+  if (leaderboardSubmitScreen) {
+    leaderboardSubmitScreen.hidden = true;
+  }
   scheduleTick();
   board.classList.add("is-resetting");
   render();
