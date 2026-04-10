@@ -9,6 +9,13 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
 body {
   background:
     radial-gradient(ellipse at 18px 22px, rgba(163, 230, 53, 0.26) 0 8px, transparent 9px),
@@ -25,9 +32,11 @@ body {
     ),
     linear-gradient(135deg, #3f8f42, #236f34 46%, #1f5f32);
   background-size: 72px 64px, 96px 88px, 34px 34px, 46px 46px, auto;
+  inset: 0;
   margin: 0;
-  min-height: 100vh;
-  position: relative;
+  min-height: 100%;
+  position: fixed;
+  width: 100%;
 }
 
 body.bombed {
@@ -465,11 +474,42 @@ button:focus-visible {
 
 .app {
   display: grid;
-  min-height: 100vh;
+  height: 100%;
+  min-height: 100%;
+  overflow: hidden;
   padding: 1rem;
   place-items: start center;
   position: relative;
   z-index: 1;
+}
+
+.tab-bar {
+  display: flex;
+  gap: 0.5rem;
+  margin: 0 auto 1rem;
+}
+
+.tab-button {
+  min-width: 110px;
+}
+
+.tab-button.is-active {
+  background: #374151;
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.tab-panel {
+  width: min(100%, 760px);
+}
+
+.tab-panel[hidden] {
+  display: none;
+}
+
+#leaderboard-panel {
+  justify-items: center;
+  text-align: center;
 }
 
 .app::before,
@@ -2078,6 +2118,20 @@ h1 {
 
 .actions {
   margin-bottom: 1rem;
+}
+
+#leaderboard {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+#leaderboard h2 {
+  margin: 0 0 0.4rem;
+}
+
+#leaderboard-list {
+  margin: 0;
+  padding-left: 1.25rem;
 }
 
 .level-panel {

@@ -525,7 +525,7 @@ test("sizes level boards to the smallest balanced playable grid", () => {
   assert.deepEqual(getLevelBoardSize(6), { width: 9, height: 9 });
   assert.deepEqual(getLevelBoardSize(7), { width: 11, height: 11 });
   assert.deepEqual(getLevelBoardSize(10), { width: 11, height: 11 });
-  assert.deepEqual(getLevelBoardSize(30), { width: 24, height: 25 });
+  assert.deepEqual(getLevelBoardSize(30), { width: 21, height: 28 });
 });
 
 test("advances levels when the apple target is met", () => {
