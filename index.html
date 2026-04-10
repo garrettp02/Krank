@@ -2,58 +2,99 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <link rel="apple-touch-icon" sizes="180x180" href="./icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="./icons/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png" />
+    <link rel="manifest" href="./manifest.json" />
     <title>Classic Snake</title>
-    <link rel="stylesheet" href="./src/styles.css?v=20260408-25" />
+    <link rel="stylesheet" href="./src/styles.css?v=20260409-26" />
   </head>
   <body>
     <main class="app">
-      <section class="game-shell" aria-labelledby="game-title">
-        <div class="top-bar">
-          <h1 id="game-title">Level <span id="current-level">1</span></h1>
-          <div class="score-board">
-            <p class="score">Score: <span id="score">0</span></p>
-            <p class="score-detail">
-              Apples: <span id="level-apples">0</span>/<span id="level-target">1</span>
-            </p>
-            <p class="score-detail">
-              Speed: <span id="speed">1.00x</span>
-            </p>
-            <p class="score-detail">
-              Time: <span id="timer">00:00.0</span>
-            </p>
-            <p class="score-detail">
-              Level Time: <span id="level-timer">00:00.0</span>
-            </p>
+      <div class="tab-bar" role="tablist" aria-label="Main panels">
+        <button
+          id="game-tab-button"
+          class="tab-button is-active"
+          role="tab"
+          aria-selected="true"
+          aria-controls="game-panel"
+          type="button"
+        >
+          Game
+        </button>
+        <button
+          id="leaderboard-tab-button"
+          class="tab-button"
+          role="tab"
+          aria-selected="false"
+          aria-controls="leaderboard-panel"
+          type="button"
+        >
+          Leaderboard
+        </button>
+      </div>
+
+      <section id="game-panel" class="tab-panel" role="tabpanel" aria-labelledby="game-tab-button">
+        <section class="game-shell" aria-labelledby="game-title">
+          <div class="top-bar">
+            <h1 id="game-title">Level <span id="current-level">1</span></h1>
+            <div class="score-board">
+              <p class="score">Score: <span id="score">0</span></p>
+              <p class="score-detail">
+                Apples: <span id="level-apples">0</span>/<span id="level-target">1</span>
+              </p>
+              <p class="score-detail">
+                Speed: <span id="speed">1.00x</span>
+              </p>
+              <p class="score-detail">
+                Time: <span id="timer">00:00.0</span>
+              </p>
+              <p class="score-detail">
+                Level Time: <span id="level-timer">00:00.0</span>
+              </p>
+            </div>
           </div>
-        </div>
 
-        <div class="game-column">
-          <div class="board-rocks">
-            <div
-              id="board"
-              class="board"
-              role="grid"
-              aria-label="Snake game board"
-            ></div>
+          <div class="game-column">
+            <div class="board-rocks">
+              <div
+                id="board"
+                class="board"
+                role="grid"
+                aria-label="Snake game board"
+              ></div>
+            </div>
+
+            <aside class="level-panel" aria-label="Level list">
+              <p class="level-panel-title">Levels</p>
+              <ol id="level-list" class="level-list"></ol>
+            </aside>
+
+            <p id="status" class="status" aria-live="polite">
+              Use arrow keys or WASD to start.
+            </p>
+
+            <div class="actions">
+              <button id="restart" type="button">Restart</button>
+              <button id="pause" type="button">Pause</button>
+            </div>
           </div>
+        </section>
+      </section>
 
-          <aside class="level-panel" aria-label="Level list">
-            <p class="level-panel-title">Levels</p>
-            <ol id="level-list" class="level-list"></ol>
-          </aside>
-
-          <p id="status" class="status" aria-live="polite">
-            Use arrow keys or WASD to start.
-          </p>
-
-          <div class="actions">
-            <button id="restart" type="button">Restart</button>
-            <button id="pause" type="button">Pause</button>
-          </div>
-
-        </div>
-
+      <section
+        id="leaderboard-panel"
+        class="tab-panel"
+        role="tabpanel"
+        aria-labelledby="leaderboard-tab-button"
+        hidden
+      >
+        <section id="leaderboard" aria-labelledby="leaderboard-title">
+          <h2 id="leaderboard-title">Top 10</h2>
+          <ol id="leaderboard-list"></ol>
+        </section>
       </section>
 
       <section
@@ -107,8 +148,36 @@
           <button id="loss-restart" type="button">Restart</button>
         </div>
       </section>
+
+      <section
+        id="leaderboard-submit-screen"
+        class="win-screen"
+        aria-labelledby="leaderboard-submit-title"
+        aria-modal="true"
+        hidden
+      >
+        <div class="win-card leaderboard-submit-card">
+          <h2 id="leaderboard-submit-title">Submit Score</h2>
+          <p>Enter your name for the global leaderboard.</p>
+          <label class="leaderboard-name-label" for="leaderboard-name-input">
+            Name (max 20 characters)
+          </label>
+          <input
+            id="leaderboard-name-input"
+            class="leaderboard-name-input"
+            type="text"
+            maxlength="20"
+            autocomplete="nickname"
+          />
+          <div class="actions leaderboard-submit-actions">
+            <button id="leaderboard-submit-button" type="button">Submit</button>
+            <button id="leaderboard-skip-button" type="button">Skip</button>
+          </div>
+        </div>
+      </section>
     </main>
 
-    <script type="module" src="./src/app.js?v=20260408-13"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module" src="./src/app.js?v=20260410-15"></script>
   </body>
 </html>
