@@ -242,6 +242,8 @@ let snakeBodyAnimationFrameId = null;
 let swipeStartPoint = null;
 let swipeTrackingId = null;
 let leaderboardHandledForGameOver = false;
+let resizeRenderFrameId = null;
+let lastLevelAdvanceAt = 0;
 
 function render() {
   board.style.setProperty("--grid-width", state.width);
@@ -651,9 +653,34 @@ function getSnakeBodyPath(snake) {
     return "";
   }
 
-  return points
-    .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`)
-    .join(" ");
+  if (points.length < 3) {
+    return points
+      .map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`)
+      .join(" ");
+  }
+
+  const smoothness = 0.35;
+  let path = `M ${points[0].x} ${points[0].y}`;
+
+  for (let index = 1; index < points.length - 1; index += 1) {
+    const previous = points[index - 1];
+    const current = points[index];
+    const next = points[index + 1];
+    const beforePoint = {
+      x: current.x - (current.x - previous.x) * smoothness,
+      y: current.y - (current.y - previous.y) * smoothness,
+    };
+    const afterPoint = {
+      x: current.x + (next.x - current.x) * smoothness,
+      y: current.y + (next.y - current.y) * smoothness,
+    };
+
+    path += ` L ${beforePoint.x} ${beforePoint.y} Q ${current.x} ${current.y} ${afterPoint.x} ${afterPoint.y}`;
+  }
+
+  const tail = points[points.length - 1];
+  path += ` L ${tail.x} ${tail.y}`;
+  return path;
 }
 
 function getCellCenterPoint(cell) {
@@ -981,6 +1008,12 @@ function renderLevels() {
       level < currentLevel || (completedAllLevels && level <= currentLevel),
     );
     item.classList.toggle("is-current", level === currentLevel);
+    item.classList.toggle(
+      "is-newly-unlocked",
+      level === currentLevel &&
+        !completedAllLevels &&
+        performance.now() - lastLevelAdvanceAt <= 2400,
+    );
   }
 
   if (lastScrolledLevel !== currentLevel) {
@@ -1063,7 +1096,7 @@ async function loadLeaderboard() {
 
   const { data, error } = await supabaseClient
     .from("leaderboard")
-    .select("player_name, score")
+    .select("player_name, score, level_reached")
     .order("score", { ascending: false })
     .limit(10);
 
@@ -1092,7 +1125,22 @@ function renderLeaderboard(entries) {
 
   entries.forEach((entry, index) => {
     const item = document.createElement("li");
-    item.textContent = `${index + 1}. ${entry.player_name} — ${entry.score}`;
+    const rank = document.createElement("span");
+    const name = document.createElement("span");
+    const scoreValue = document.createElement("span");
+    const levelValue = document.createElement("span");
+
+    item.className = "leaderboard-entry";
+    rank.className = "leaderboard-entry-rank";
+    name.className = "leaderboard-entry-name";
+    scoreValue.className = "leaderboard-entry-score";
+    levelValue.className = "leaderboard-entry-level";
+
+    rank.textContent = `#${index + 1}`;
+    name.textContent = entry.player_name ?? "Anonymous";
+    scoreValue.textContent = `Score ${formatScore(entry.score ?? 0)}`;
+    levelValue.textContent = `Level ${entry.level_reached ?? 1}`;
+    item.append(rank, name, scoreValue, levelValue);
     leaderboardList.append(item);
   });
 }
@@ -1502,6 +1550,7 @@ function applyLevelProgress(progress) {
     recordLevelSplit(previousLevel);
     state = resizeStateForLevel(currentLevel, state);
     requestedDirection = state.direction;
+    lastLevelAdvanceAt = performance.now();
     showLevelChangePopup(currentLevel);
   }
 
@@ -1742,6 +1791,7 @@ function restartGame() {
   maxSnakeLengthReached = state.snake.length;
   powerUpsConsumed = 0;
   completedAllLevels = false;
+  lastLevelAdvanceAt = performance.now();
   tickMs = BASE_TICK_MS;
   leaderboardHandledForGameOver = false;
   if (leaderboardSubmitScreen) {
@@ -2030,7 +2080,9 @@ function renderScoreSummary({
 
   scoreElement.textContent = formatScore(scoreBreakdown.finalScore);
   timeElement.textContent = formatDuration(getElapsedRunMs());
-  resultElement.textContent = completedAllLevels ? "Completed" : "Failed";
+  if (resultElement) {
+    resultElement.textContent = completedAllLevels ? "Completed" : "Finished";
+  }
   furthestLevelElement.textContent = completedAllLevels
     ? "Completed"
     : `Level ${progress.furthestLevel}`;
@@ -2301,11 +2353,21 @@ gameTabButton.addEventListener("click", () => setActiveTab("game"));
 leaderboardTabButton.addEventListener("click", () => setActiveTab("leaderboard"));
 
 setActiveTab("game");
+lastLevelAdvanceAt = performance.now();
 render();
 void loadLeaderboard();
 showLevelChangePopup(currentLevel);
 scheduleTick();
-window.addEventListener("resize", render);
+window.addEventListener("resize", () => {
+  if (resizeRenderFrameId) {
+    cancelAnimationFrame(resizeRenderFrameId);
+  }
+
+  resizeRenderFrameId = requestAnimationFrame(() => {
+    resizeRenderFrameId = null;
+    render();
+  });
+});
 
 function scheduleTick() {
   if (tickTimerId) {
