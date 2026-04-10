@@ -2091,6 +2091,20 @@ h1 {
   margin-bottom: 1rem;
 }
 
+#leaderboard {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+#leaderboard h2 {
+  margin: 0 0 0.4rem;
+}
+
+#leaderboard-list {
+  margin: 0;
+  padding-left: 1.25rem;
+}
+
 .level-panel {
   background-color: #dca85f;
   background-image:

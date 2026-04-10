@@ -29,6 +29,16 @@ import {
 } from "./levels.js?v=20260408-13";
 import { getSpeedrunScoreBreakdown } from "./scoring.js?v=20260408-13";
 
+const { createClient } = window.supabase ?? {};
+const SUPABASE_URL = "YOUR_SUPABASE_URL";
+const SUPABASE_KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY";
+const supabaseClient =
+  createClient &&
+  SUPABASE_URL.startsWith("http") &&
+  SUPABASE_KEY !== "YOUR_SUPABASE_PUBLISHABLE_KEY"
+    ? createClient(SUPABASE_URL, SUPABASE_KEY)
+    : null;
+
 const keys = new Map([
   ["ArrowUp", "up"],
   ["w", "up"],
@@ -175,6 +185,7 @@ const lossPowerUps = document.querySelector("#loss-power-ups");
 const lossRestart = document.querySelector("#loss-restart");
 const topBar = document.querySelector(".top-bar");
 const actions = document.querySelector(".actions");
+const leaderboardList = document.querySelector("#leaderboard-list");
 
 let currentLevel = 1;
 let state = createLevelState(currentLevel);
@@ -222,6 +233,7 @@ let snakeBodyAnimation = null;
 let snakeBodyAnimationFrameId = null;
 let swipeStartPoint = null;
 let swipeTrackingId = null;
+let leaderboardHandledForGameOver = false;
 
 function render() {
   board.style.setProperty("--grid-width", state.width);
@@ -999,6 +1011,7 @@ function tick() {
       clearBlackoutWarning();
       clearLevelChangePopup();
       clearBombTimer();
+      void handleGameOverLeaderboard();
     }
 
     if (applesConsumed > 0 && !completedAllLevels) {
@@ -1019,6 +1032,116 @@ function tick() {
 
     startSnakeBodyAnimation(previousSnake, state.snake);
     render();
+  }
+}
+
+async function loadLeaderboard() {
+  if (!leaderboardList) {
+    return;
+  }
+
+  if (!supabaseClient) {
+    renderLeaderboardUnavailable();
+    return;
+  }
+
+  const { data, error } = await supabaseClient
+    .from("leaderboard")
+    .select("player_name, score")
+    .order("score", { ascending: false })
+    .limit(10);
+
+  if (error) {
+    console.error("Failed to load leaderboard:", error);
+    renderLeaderboardUnavailable();
+    return;
+  }
+
+  renderLeaderboard(data ?? []);
+}
+
+function renderLeaderboard(entries) {
+  if (!leaderboardList) {
+    return;
+  }
+
+  leaderboardList.textContent = "";
+
+  if (!entries.length) {
+    const item = document.createElement("li");
+    item.textContent = "No scores yet";
+    leaderboardList.append(item);
+    return;
+  }
+
+  entries.forEach((entry, index) => {
+    const item = document.createElement("li");
+    item.textContent = `${index + 1}. ${entry.player_name} — ${entry.score}`;
+    leaderboardList.append(item);
+  });
+}
+
+function renderLeaderboardUnavailable() {
+  if (!leaderboardList) {
+    return;
+  }
+
+  leaderboardList.textContent = "";
+  const item = document.createElement("li");
+  item.textContent = "Leaderboard unavailable";
+  leaderboardList.append(item);
+}
+
+async function submitScore(name, scoreValue, levelReached) {
+  if (!supabaseClient) {
+    return;
+  }
+
+  const { error } = await supabaseClient.from("leaderboard").insert({
+    player_name: name,
+    score: scoreValue,
+    level_reached: levelReached,
+  });
+
+  if (error) {
+    throw error;
+  }
+}
+
+function promptForName() {
+  const rawName = window.prompt("Enter your name for the leaderboard (max 20 chars):");
+
+  if (!rawName) {
+    return null;
+  }
+
+  const name = rawName.trim().slice(0, 20);
+
+  if (!name) {
+    return null;
+  }
+
+  return name;
+}
+
+async function handleGameOverLeaderboard() {
+  if (leaderboardHandledForGameOver) {
+    return;
+  }
+
+  leaderboardHandledForGameOver = true;
+  const name = promptForName();
+
+  if (!name) {
+    return;
+  }
+
+  try {
+    const finalScore = getCurrentScoreBreakdown().finalScore;
+    await submitScore(name, finalScore, currentLevel);
+    await loadLeaderboard();
+  } catch (error) {
+    console.error("Failed to submit leaderboard score:", error);
   }
 }
 
@@ -1569,6 +1692,7 @@ function restartGame() {
   powerUpsConsumed = 0;
   completedAllLevels = false;
   tickMs = BASE_TICK_MS;
+  leaderboardHandledForGameOver = false;
   scheduleTick();
   board.classList.add("is-resetting");
   render();
@@ -2109,6 +2233,7 @@ boardRocks.addEventListener("touchend", handleBoardTouchEnd, { passive: false })
 boardRocks.addEventListener("touchcancel", handleBoardTouchCancel, { passive: false });
 
 render();
+void loadLeaderboard();
 showLevelChangePopup(currentLevel);
 scheduleTick();
 window.addEventListener("resize", render);
