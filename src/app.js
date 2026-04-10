@@ -185,6 +185,10 @@ const lossPowerUps = document.querySelector("#loss-power-ups");
 const lossRestart = document.querySelector("#loss-restart");
 const topBar = document.querySelector(".top-bar");
 const actions = document.querySelector(".actions");
+const gameTabButton = document.querySelector("#game-tab-button");
+const leaderboardTabButton = document.querySelector("#leaderboard-tab-button");
+const gamePanel = document.querySelector("#game-panel");
+const leaderboardPanel = document.querySelector("#leaderboard-panel");
 const leaderboardList = document.querySelector("#leaderboard-list");
 
 let currentLevel = 1;
@@ -2147,6 +2151,18 @@ function handleBoardTouchCancel() {
   clearSwipeGesture();
 }
 
+function setActiveTab(tab) {
+  const isGameTab = tab === "game";
+
+  gameTabButton.classList.toggle("is-active", isGameTab);
+  gameTabButton.setAttribute("aria-selected", String(isGameTab));
+  gamePanel.hidden = !isGameTab;
+
+  leaderboardTabButton.classList.toggle("is-active", !isGameTab);
+  leaderboardTabButton.setAttribute("aria-selected", String(!isGameTab));
+  leaderboardPanel.hidden = isGameTab;
+}
+
 function getTrackedTouch(touchList) {
   return [...touchList].find((touch) => touch.identifier === swipeTrackingId) ?? null;
 }
@@ -2231,7 +2247,10 @@ boardRocks.addEventListener("touchstart", handleBoardTouchStart, { passive: fals
 boardRocks.addEventListener("touchmove", handleBoardTouchMove, { passive: false });
 boardRocks.addEventListener("touchend", handleBoardTouchEnd, { passive: false });
 boardRocks.addEventListener("touchcancel", handleBoardTouchCancel, { passive: false });
+gameTabButton.addEventListener("click", () => setActiveTab("game"));
+leaderboardTabButton.addEventListener("click", () => setActiveTab("leaderboard"));
 
+setActiveTab("game");
 render();
 void loadLeaderboard();
 showLevelChangePopup(currentLevel);
