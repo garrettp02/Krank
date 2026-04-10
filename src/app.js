@@ -30,8 +30,8 @@ import {
 import { getSpeedrunScoreBreakdown } from "./scoring.js?v=20260408-13";
 
 const { createClient } = window.supabase ?? {};
-const SUPABASE_URL = "YOUR_SUPABASE_URL";
-const SUPABASE_KEY = "YOUR_SUPABASE_PUBLISHABLE_KEY";
+const SUPABASE_URL = "https://hulowkzbwfaejyldyjps.supabase.co";
+const SUPABASE_KEY = "sb_publishable_aCPRF-d9aTOEnm2T6wYymQ_ag0vBYlx";
 const supabaseClient =
   createClient &&
   SUPABASE_URL.startsWith("http") &&
