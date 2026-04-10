@@ -508,6 +508,7 @@ button:focus-visible {
 }
 
 #leaderboard-panel {
+  display: grid;
   justify-items: center;
   text-align: center;
 }

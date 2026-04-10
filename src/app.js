@@ -1003,6 +1003,9 @@ function tick() {
     !completedAllLevels
   ) {
     if (detonateBombIfNeeded(tickNow)) {
+      if (state.gameOver) {
+        void handleGameOverLeaderboard();
+      }
       render();
       return;
     }
