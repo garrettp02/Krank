@@ -1011,6 +1011,7 @@ function tick() {
     }
 
     const wasGameOver = state.gameOver;
+    const wasCompletedAllLevels = completedAllLevels;
     const previousSnake = cloneSnake(state.snake);
     state = stepGame(state, requestedDirection);
     requestedDirection = state.direction;
@@ -1040,6 +1041,10 @@ function tick() {
     }
 
     updateWormMovement(tickNow);
+
+    if (!wasCompletedAllLevels && completedAllLevels) {
+      void handleGameOverLeaderboard();
+    }
 
     startSnakeBodyAnimation(previousSnake, state.snake);
     render();
