@@ -456,13 +456,23 @@ body.blackout::before {
 
 @keyframes river-flow {
   0% {
-    background-position: center, 0 0, 0 0;
-    filter: hue-rotate(0deg);
+    background-position: center;
   }
 
   100% {
-    background-position: center, 140px 0, -180px 0;
-    filter: hue-rotate(-6deg);
+    background-position: center;
+  }
+}
+
+@keyframes river-flow-lines {
+  0% {
+    background-position: center, center;
+    opacity: 0.26;
+  }
+
+  100% {
+    background-position: 14px -8px, -12px 8px;
+    opacity: 0.46;
   }
 }
 
@@ -575,23 +585,18 @@ button:focus-visible {
   animation: river-flow 8s linear infinite alternate;
   background:
     center / 100% 100% no-repeat
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000' preserveAspectRatio='none'%3E%3Cpath d='M-40 110 C 120 90, 180 180, 280 230 S 470 330, 560 430 S 760 620, 860 730 S 980 900, 1080 960' fill='none' stroke='%230284c7' stroke-width='26' stroke-linecap='round'/%3E%3Cpath d='M-40 110 C 120 90, 180 180, 280 230 S 470 330, 560 430 S 760 620, 860 730 S 980 900, 1080 960' fill='none' stroke='%230ea5e9' stroke-width='34' stroke-linecap='round'/%3E%3Cpath d='M-40 110 C 120 90, 180 180, 280 230 S 470 330, 560 430 S 760 620, 860 730 S 980 900, 1080 960' fill='none' stroke='%23e0f2fe' stroke-width='14' stroke-linecap='round' stroke-opacity='0.8'/%3E%3C/svg%3E"),
-    repeating-linear-gradient(
-      84deg,
-      rgba(125, 211, 252, 0.28) 0 26px,
-      rgba(14, 165, 233, 0.08) 26px 50px
-    ),
-    repeating-linear-gradient(
-      104deg,
-      rgba(2, 132, 199, 0.16) 0 20px,
-      transparent 20px 44px
-    );
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000' preserveAspectRatio='none'%3E%3Cpath d='M-40 110 C 120 90, 180 180, 280 230 S 470 330, 560 430 S 760 620, 860 730 S 980 900, 1080 960' fill='none' stroke='%230284c7' stroke-width='20' stroke-linecap='round'/%3E%3Cpath d='M-40 110 C 120 90, 180 180, 280 230 S 470 330, 560 430 S 760 620, 860 730 S 980 900, 1080 960' fill='none' stroke='%230ea5e9' stroke-width='28' stroke-linecap='round'/%3E%3Cpath d='M-40 110 C 120 90, 180 180, 280 230 S 470 330, 560 430 S 760 620, 860 730 S 980 900, 1080 960' fill='none' stroke='%23e0f2fe' stroke-width='8' stroke-linecap='round' stroke-opacity='0.7'/%3E%3C/svg%3E");
   opacity: 1;
   z-index: -2;
 }
 
 .app::after {
-  background: none;
+  animation: river-flow-lines 1200ms linear infinite alternate;
+  background:
+    center / 100% 100% no-repeat
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000' preserveAspectRatio='none'%3E%3Cpath d='M-40 110 C 120 90, 180 180, 280 230 S 470 330, 560 430 S 760 620, 860 730 S 980 900, 1080 960' fill='none' stroke='%23f0f9ff' stroke-width='4' stroke-linecap='round' stroke-dasharray='1 18' stroke-opacity='0.86'/%3E%3C/svg%3E"),
+    center / 100% 100% no-repeat
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1000 1000' preserveAspectRatio='none'%3E%3Cpath d='M-40 110 C 120 90, 180 180, 280 230 S 470 330, 560 430 S 760 620, 860 730 S 980 900, 1080 960' fill='none' stroke='%23bae6fd' stroke-width='3' stroke-linecap='round' stroke-dasharray='1 14' stroke-opacity='0.66'/%3E%3C/svg%3E");
   z-index: -1;
 }
 
@@ -908,7 +913,7 @@ h1 {
   --level-change-glow: rgba(146, 64, 14, 0.18);
   animation: level-change-card-in-out var(--level-change-duration, 1800ms)
     cubic-bezier(0.22, 0.9, 0.28, 1) forwards;
-  background: linear-gradient(135deg, rgba(17, 24, 39, 0.78), rgba(31, 41, 55, 0.68));
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.6), rgba(31, 41, 55, 0.5));
   border: 2px solid var(--level-change-edge);
   border-radius: 12px;
   box-shadow:
@@ -922,7 +927,7 @@ h1 {
 }
 
 .level-change-card::after {
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 40%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), transparent 40%);
   content: "";
   inset: 0;
   pointer-events: none;
@@ -2419,17 +2424,24 @@ h1 {
 }
 
 .level-item.is-newly-unlocked::after {
-  background: rgba(14, 165, 233, 0.92);
-  border-radius: 999px;
-  color: #f8fafc;
-  content: "NEW";
-  font-size: 0.58rem;
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  padding: 0.15rem 0.3rem;
+  background: linear-gradient(120deg, rgba(125, 211, 252, 0), rgba(125, 211, 252, 0.45), rgba(125, 211, 252, 0));
+  border-radius: 5px;
+  content: "";
+  inset: 2px;
+  opacity: 0.62;
   position: absolute;
-  right: 0.2rem;
-  top: 0.2rem;
+  transform: translateX(-38%);
+}
+
+.level-item.is-milestone-celebrating {
+  animation:
+    level-change-card-in-out 1400ms cubic-bezier(0.22, 0.9, 0.28, 1) 1,
+    level-item-unlocked-pulse 700ms ease-out 3;
+  background: rgba(251, 191, 36, 0.34);
+  border-color: rgba(146, 64, 14, 0.88);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 244, 214, 0.3),
+    0 0 0 4px rgba(251, 191, 36, 0.18);
 }
 
 .win-screen {

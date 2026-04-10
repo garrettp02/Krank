@@ -141,6 +141,11 @@ const LEVEL_CHANGE_POPUP_LEVELS = Object.freeze({
     ],
   }),
 });
+const LEVEL_SCROLLER_MILESTONE_LEVELS = Object.freeze(
+  Object.keys(LEVEL_CHANGE_POPUP_LEVELS)
+    .map(Number)
+    .filter((level) => level > 1),
+);
 const scoreFormatter = new Intl.NumberFormat("en-US");
 
 const board = document.querySelector("#board");
@@ -1011,6 +1016,13 @@ function renderLevels() {
     item.classList.toggle(
       "is-newly-unlocked",
       level === currentLevel &&
+        !completedAllLevels &&
+        performance.now() - lastLevelAdvanceAt <= 2400,
+    );
+    item.classList.toggle(
+      "is-milestone-celebrating",
+      level === currentLevel &&
+        LEVEL_SCROLLER_MILESTONE_LEVELS.includes(level) &&
         !completedAllLevels &&
         performance.now() - lastLevelAdvanceAt <= 2400,
     );
