@@ -9,7 +9,7 @@
     <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png" />
     <link rel="manifest" href="./manifest.json" />
     <title>Classic Snake</title>
-    <link rel="stylesheet" href="./src/styles.css?v=20260411-28" />
+    <link rel="stylesheet" href="./src/styles.css?v=20260411-29" />
   </head>
   <body>
     <main class="app">
@@ -44,6 +44,7 @@
 
       <section id="game-panel" class="tab-panel" role="tabpanel" aria-labelledby="game-tab-button">
         <section class="game-shell" aria-labelledby="game-title">
+          <p id="fps-counter" class="fps-counter" aria-live="off">FPS: --</p>
           <div class="top-bar">
             <h1 id="game-title">Level <span id="current-level">1</span></h1>
             <div class="score-board">
@@ -184,6 +185,6 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script type="module" src="./src/app.js?v=20260411-18"></script>
+    <script type="module" src="./src/app.js?v=20260411-19"></script>
   </body>
 </html>
