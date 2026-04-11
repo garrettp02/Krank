@@ -9,10 +9,16 @@
     <link rel="icon" type="image/png" sizes="512x512" href="./icons/icon-512.png" />
     <link rel="manifest" href="./manifest.json" />
     <title>Classic Snake</title>
-    <link rel="stylesheet" href="./src/styles.css?v=20260409-26" />
+    <link rel="stylesheet" href="./src/styles.css?v=20260411-27" />
   </head>
   <body>
     <main class="app">
+      <div class="scenery" aria-hidden="true">
+        <span class="scenery-item scenery-item--fountain"></span>
+        <span class="scenery-item scenery-item--path"></span>
+        <span class="scenery-item scenery-item--house"></span>
+      </div>
+
       <div class="tab-bar" role="tablist" aria-label="Main panels">
         <button
           id="game-tab-button"
@@ -178,6 +184,6 @@
     </main>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script type="module" src="./src/app.js?v=20260410-16"></script>
+    <script type="module" src="./src/app.js?v=20260411-17"></script>
   </body>
 </html>

@@ -250,6 +250,17 @@ let leaderboardHandledForGameOver = false;
 let resizeRenderFrameId = null;
 let lastLevelAdvanceAt = 0;
 
+function scheduleViewportRender() {
+  if (resizeRenderFrameId) {
+    cancelAnimationFrame(resizeRenderFrameId);
+  }
+
+  resizeRenderFrameId = requestAnimationFrame(() => {
+    resizeRenderFrameId = null;
+    render();
+  });
+}
+
 function render() {
   board.style.setProperty("--grid-width", state.width);
   board.style.setProperty("--grid-height", state.height);
@@ -2367,19 +2378,16 @@ leaderboardTabButton.addEventListener("click", () => setActiveTab("leaderboard")
 setActiveTab("game");
 lastLevelAdvanceAt = performance.now();
 render();
+requestAnimationFrame(() => {
+  scheduleViewportRender();
+  setTimeout(scheduleViewportRender, 120);
+});
 void loadLeaderboard();
 showLevelChangePopup(currentLevel);
 scheduleTick();
-window.addEventListener("resize", () => {
-  if (resizeRenderFrameId) {
-    cancelAnimationFrame(resizeRenderFrameId);
-  }
-
-  resizeRenderFrameId = requestAnimationFrame(() => {
-    resizeRenderFrameId = null;
-    render();
-  });
-});
+window.addEventListener("resize", scheduleViewportRender);
+window.visualViewport?.addEventListener("resize", scheduleViewportRender);
+window.visualViewport?.addEventListener("scroll", scheduleViewportRender);
 
 function scheduleTick() {
   if (tickTimerId) {
