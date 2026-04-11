@@ -199,6 +199,7 @@ const leaderboardTabButton = document.querySelector("#leaderboard-tab-button");
 const gamePanel = document.querySelector("#game-panel");
 const leaderboardPanel = document.querySelector("#leaderboard-panel");
 const leaderboardList = document.querySelector("#leaderboard-list");
+const fpsCounter = document.querySelector("#fps-counter");
 
 let currentLevel = 1;
 let state = createLevelState(currentLevel);
@@ -249,6 +250,49 @@ let swipeTrackingId = null;
 let leaderboardHandledForGameOver = false;
 let resizeRenderFrameId = null;
 let lastLevelAdvanceAt = 0;
+let fpsCounterFrameId = null;
+let lastFpsHudUpdateAt = 0;
+const fpsFrameTimes = [];
+
+function updateFpsCounter(now = performance.now()) {
+  if (!fpsCounter) {
+    return;
+  }
+
+  fpsFrameTimes.push(now);
+
+  while (fpsFrameTimes.length && now - fpsFrameTimes[0] > 1000) {
+    fpsFrameTimes.shift();
+  }
+
+  if (now - lastFpsHudUpdateAt < 200) {
+    return;
+  }
+
+  lastFpsHudUpdateAt = now;
+
+  if (fpsFrameTimes.length < 2) {
+    fpsCounter.textContent = "FPS: --";
+    return;
+  }
+
+  const firstFrame = fpsFrameTimes[0];
+  const lastFrame = fpsFrameTimes[fpsFrameTimes.length - 1];
+  const elapsedMs = lastFrame - firstFrame;
+
+  if (elapsedMs <= 0) {
+    fpsCounter.textContent = "FPS: --";
+    return;
+  }
+
+  const fpsValue = ((fpsFrameTimes.length - 1) * 1000) / elapsedMs;
+  fpsCounter.textContent = `FPS: ${Math.round(fpsValue)}`;
+}
+
+function trackFps(now) {
+  updateFpsCounter(now);
+  fpsCounterFrameId = requestAnimationFrame(trackFps);
+}
 
 function getViewportDimensions() {
   const viewport = window.visualViewport;
@@ -2394,6 +2438,9 @@ leaderboardTabButton.addEventListener("click", () => setActiveTab("leaderboard")
 
 setActiveTab("game");
 lastLevelAdvanceAt = performance.now();
+if (!fpsCounterFrameId) {
+  fpsCounterFrameId = requestAnimationFrame(trackFps);
+}
 render();
 requestAnimationFrame(() => {
   scheduleViewportRender();

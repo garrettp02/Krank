@@ -678,7 +678,27 @@ button:focus-visible {
   display: grid;
   gap: 1rem;
   grid-template-columns: minmax(0, 1fr);
+  position: relative;
   width: min(100%, 760px);
+}
+
+.fps-counter {
+  backdrop-filter: blur(2px);
+  background: rgba(15, 23, 42, 0.62);
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  border-radius: 999px;
+  color: #e2e8f0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  margin: 0;
+  min-width: 72px;
+  padding: 0.24rem 0.55rem;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: -0.2rem;
+  z-index: 4;
 }
 
 .game-column {
@@ -734,6 +754,13 @@ h1 {
 .score-detail {
   color: #d1d5db;
   margin: 0;
+}
+
+@media (max-width: 760px) {
+  .fps-counter {
+    right: 0.2rem;
+    top: -0.45rem;
+  }
 }
 
 .board-rocks {
