@@ -250,6 +250,22 @@ let leaderboardHandledForGameOver = false;
 let resizeRenderFrameId = null;
 let lastLevelAdvanceAt = 0;
 
+function getViewportDimensions() {
+  const viewport = window.visualViewport;
+
+  if (viewport && viewport.width > 0 && viewport.height > 0) {
+    return {
+      width: viewport.width,
+      height: viewport.height,
+    };
+  }
+
+  return {
+    width: window.innerWidth,
+    height: window.innerHeight,
+  };
+}
+
 function scheduleViewportRender() {
   if (resizeRenderFrameId) {
     cancelAnimationFrame(resizeRenderFrameId);
@@ -957,6 +973,7 @@ function renderBombBlast() {
 }
 
 function updateBoardViewportSize() {
+  const viewport = getViewportDimensions();
   const boardStyles = window.getComputedStyle(board);
   const boardRocksStyles = window.getComputedStyle(boardRocks);
   const boardBorderWidth =
@@ -983,10 +1000,10 @@ function updateBoardViewportSize() {
     actions.offsetHeight +
     boardFrameHeight +
     96;
-  const maxBoardHeight = Math.max(1, window.innerHeight - reservedHeight);
+  const maxBoardHeight = Math.max(1, viewport.height - reservedHeight);
   const maxBoardWidth = Math.max(
     1,
-    boardRocks.parentElement.clientWidth - boardBorderWidth - boardFrameWidth,
+    Math.min(boardRocks.parentElement.clientWidth, viewport.width) - boardBorderWidth - boardFrameWidth,
   );
   const maxCellSize = Math.floor(
     Math.min(maxBoardWidth / state.width, maxBoardHeight / state.height),
@@ -2386,6 +2403,9 @@ void loadLeaderboard();
 showLevelChangePopup(currentLevel);
 scheduleTick();
 window.addEventListener("resize", scheduleViewportRender);
+window.addEventListener("orientationchange", scheduleViewportRender);
+window.addEventListener("load", scheduleViewportRender);
+window.addEventListener("pageshow", scheduleViewportRender);
 window.visualViewport?.addEventListener("resize", scheduleViewportRender);
 window.visualViewport?.addEventListener("scroll", scheduleViewportRender);
 
